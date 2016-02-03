@@ -7,25 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D00B4E281C6271AA00EEDAFC /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D00B4E271C6271AA00EEDAFC /* GameScene.sks */; };
 		D0D28F6E1C624B39004DB7B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */; };
-		D0D28F701C624B39004DB7B3 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F6F1C624B39004DB7B3 /* GameScene.sks */; };
 		D0D28F721C624B39004DB7B3 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F711C624B39004DB7B3 /* GameScene.swift */; };
 		D0D28F741C624B39004DB7B3 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F731C624B39004DB7B3 /* GameViewController.swift */; };
 		D0D28F771C624B39004DB7B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F751C624B39004DB7B3 /* Main.storyboard */; };
 		D0D28F791C624B39004DB7B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F781C624B39004DB7B3 /* Assets.xcassets */; };
 		D0D28F7C1C624B39004DB7B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F7A1C624B39004DB7B3 /* LaunchScreen.storyboard */; };
+		D0D28F8A1C6260B7004DB7B3 /* proj1.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F841C6260B7004DB7B3 /* proj1.png */; };
+		D0D28F8B1C6260B7004DB7B3 /* proj2.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F851C6260B7004DB7B3 /* proj2.png */; };
+		D0D28F8C1C6260B7004DB7B3 /* proj3.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F861C6260B7004DB7B3 /* proj3.png */; };
+		D0D28F8D1C6260B7004DB7B3 /* proj4.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F871C6260B7004DB7B3 /* proj4.png */; };
+		D0D28F8E1C6260B7004DB7B3 /* ship.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F881C6260B7004DB7B3 /* ship.png */; };
+		D0D28F8F1C6260B7004DB7B3 /* ship1.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D28F891C6260B7004DB7B3 /* ship1.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D00B4E271C6271AA00EEDAFC /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		D0D28F6A1C624B38004DB7B3 /* JustAnotherSpaceGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JustAnotherSpaceGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D0D28F6F1C624B39004DB7B3 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		D0D28F711C624B39004DB7B3 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		D0D28F731C624B39004DB7B3 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		D0D28F761C624B39004DB7B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D0D28F781C624B39004DB7B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D0D28F7B1C624B39004DB7B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D0D28F7D1C624B39004DB7B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D0D28F841C6260B7004DB7B3 /* proj1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = proj1.png; sourceTree = "<group>"; };
+		D0D28F851C6260B7004DB7B3 /* proj2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = proj2.png; sourceTree = "<group>"; };
+		D0D28F861C6260B7004DB7B3 /* proj3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = proj3.png; sourceTree = "<group>"; };
+		D0D28F871C6260B7004DB7B3 /* proj4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = proj4.png; sourceTree = "<group>"; };
+		D0D28F881C6260B7004DB7B3 /* ship.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ship.png; sourceTree = "<group>"; };
+		D0D28F891C6260B7004DB7B3 /* ship1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ship1.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +70,9 @@
 		D0D28F6C1C624B38004DB7B3 /* JustAnotherSpaceGame */ = {
 			isa = PBXGroup;
 			children = (
+				D00B4E271C6271AA00EEDAFC /* GameScene.sks */,
+				D0D28F831C626094004DB7B3 /* SupportingFiles */,
 				D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */,
-				D0D28F6F1C624B39004DB7B3 /* GameScene.sks */,
 				D0D28F711C624B39004DB7B3 /* GameScene.swift */,
 				D0D28F731C624B39004DB7B3 /* GameViewController.swift */,
 				D0D28F751C624B39004DB7B3 /* Main.storyboard */,
@@ -68,6 +81,19 @@
 				D0D28F7D1C624B39004DB7B3 /* Info.plist */,
 			);
 			path = JustAnotherSpaceGame;
+			sourceTree = "<group>";
+		};
+		D0D28F831C626094004DB7B3 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				D0D28F841C6260B7004DB7B3 /* proj1.png */,
+				D0D28F851C6260B7004DB7B3 /* proj2.png */,
+				D0D28F861C6260B7004DB7B3 /* proj3.png */,
+				D0D28F871C6260B7004DB7B3 /* proj4.png */,
+				D0D28F881C6260B7004DB7B3 /* ship.png */,
+				D0D28F891C6260B7004DB7B3 /* ship1.png */,
+			);
+			name = SupportingFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,10 +154,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0D28F701C624B39004DB7B3 /* GameScene.sks in Resources */,
+				D0D28F8C1C6260B7004DB7B3 /* proj3.png in Resources */,
+				D0D28F8F1C6260B7004DB7B3 /* ship1.png in Resources */,
+				D0D28F8E1C6260B7004DB7B3 /* ship.png in Resources */,
+				D0D28F8A1C6260B7004DB7B3 /* proj1.png in Resources */,
+				D0D28F8D1C6260B7004DB7B3 /* proj4.png in Resources */,
 				D0D28F7C1C624B39004DB7B3 /* LaunchScreen.storyboard in Resources */,
+				D00B4E281C6271AA00EEDAFC /* GameScene.sks in Resources */,
 				D0D28F791C624B39004DB7B3 /* Assets.xcassets in Resources */,
 				D0D28F771C624B39004DB7B3 /* Main.storyboard in Resources */,
+				D0D28F8B1C6260B7004DB7B3 /* proj2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +324,7 @@
 				D0D28F821C624B39004DB7B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
