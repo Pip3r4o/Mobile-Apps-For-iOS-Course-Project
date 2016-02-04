@@ -21,15 +21,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0;
     var scoreLabel = UILabel();
     
+    var background = SKSpriteNode(imageNamed: "background.jpg");
+    
     var Player = SKSpriteNode(imageNamed: "ship.png");
     var motionManager = CMMotionManager();
     var destX = CGFloat(0.0);
+    
     var enemySpawnRate = 0.5;
     var enemyVelocity = 3.0;
     var shootingRate = 0.5;
     var scorePerEnemyKilled = 50;
+    var scorePerBulletIntercepted = 1;
+    var gameDifficulty = 1;
     
     override func didMoveToView(view: SKView) {
+        background.position = CGPointMake(0, 0);
+        background.zPosition = -100;
+        
+        self.addChild(background);
+        
         physicsWorld.contactDelegate = self;
         
         Player.position = CGPointMake(self.size.width/2, self.size.height/8);
@@ -99,6 +109,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func CollisionWithPlayer(enemy: SKSpriteNode, player: SKSpriteNode) {
         // take away 1 life, perform check whether there's more life else go game over
+    }
+    
+    func CollisionProjectileWithEnemyProjectile(projectile: SKSpriteNode, enemyProjectile: SKSpriteNode) {
+        // destroy both projectiles;
     }
     
     func GameOver() {
