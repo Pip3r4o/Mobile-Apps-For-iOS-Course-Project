@@ -33,14 +33,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var enemyVelocity = 3.0;
     var shootingRate = 0.5;
     var scorePerEnemyKilled = 50;
-    var scorePerBulletIntercepted = 1;
+    var scorePerBulletIntercepted = 10;
     var gameDifficulty = 1;
     var initialLives = 3;
     
+    var hasAccelerometer = true;
+    
+    var playingSceneXOffset = CGFloat(200.0);
+    
     override func didMoveToView(view: SKView) {
         // add constraint to scene to ensure no object leaves the scene
-        self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame);
-        self.physicsBody?.categoryBitMask = Physics.GameSceneBoundaries;
+        // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame);
+        // self.physicsBody?.categoryBitMask = Physics.GameSceneBoundaries;
         
         background.position = CGPointMake(0, 0);
         background.zPosition = -100;
@@ -60,7 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(Player);
         
         scoreLabel.text = "\(score)";
-        scoreLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 20));
+        scoreLabel = UILabel(frame: CGRect(x: 20, y: 10, width: 100, height: 20));
         scoreLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.0);
         scoreLabel.textColor = UIColor.whiteColor();
         
@@ -71,19 +75,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("SpawnBaddies"), userInfo: nil, repeats: true);
         
         if (motionManager.accelerometerAvailable == true) {
+            motionManager.accelerometerUpdateInterval = 0.1;
             motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler:{
                 data, error in
                 
                 let currentX = self.Player.position.x;
                 
-                if data!.acceleration.x < 0 {
-                    self.destX = currentX + CGFloat(data!.acceleration.x * 400);
+                self.destX = currentX + CGFloat(data!.acceleration.x * 350);
+                
+                if(self.destX > (self.size.width / 2) + self.playingSceneXOffset) {
+                    self.destX = (self.size.width / 2) + self.playingSceneXOffset;
                 }
-                else if data!.acceleration.x > 0 {
-                    self.destX = currentX + CGFloat(data!.acceleration.x * 400);
+                
+                if(self.destX < (self.size.width / 2) - self.playingSceneXOffset) {
+                    self.destX = (self.size.width / 2) - self.playingSceneXOffset;
                 }
             });
         } else {
+            hasAccelerometer = false;
             NSLog("Motion manager not available");
         }
     }
@@ -91,7 +100,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
          // Enable to work with acceleration instead of taps
-          let action = SKAction.moveToX(destX, duration: 1);
+        if(!hasAccelerometer) {
+            return;
+        }
+        
+          let action = SKAction.moveToX(destX, duration: 0.2);
           self.Player.runAction(action);
     }
     
@@ -157,12 +170,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.size.height = enemy.size.height / 2;
         enemy.size.width = enemy.size.width / 2;
         
-        let minX = 0 + enemy.size.width + 20;
-        let maxX = self.size.width - enemy.size.width - 20;
+        let minX : UInt32 = UInt32((self.size.width / 2) - self.playingSceneXOffset);
+        let maxX : UInt32 = UInt32((self.size.width / 2) + self.playingSceneXOffset);
         
-        let spawnPoint = UInt32(maxX - minX);
-        
-        enemy.position = CGPoint(x: CGFloat(arc4random_uniform(spawnPoint)), y: self.size.height);
+        enemy.position = CGPoint(x: CGFloat(arc4random_uniform(maxX - minX) + minX), y: self.size.height);
         
         let action = SKAction.moveToY(0 - enemy.size.height, duration: enemyVelocity);
         let actionDone = SKAction.removeFromParent();

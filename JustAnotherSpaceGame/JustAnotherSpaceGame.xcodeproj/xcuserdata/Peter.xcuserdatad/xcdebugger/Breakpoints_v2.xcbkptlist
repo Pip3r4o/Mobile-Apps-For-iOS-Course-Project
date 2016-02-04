@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "JustAnotherSpaceGame/GameScene.swift"
-            timestampString = "476283076.628731"
+            timestampString = "476289177.25682"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "SpawnBaddies()"
             landmarkType = "5">
          </BreakpointContent>
