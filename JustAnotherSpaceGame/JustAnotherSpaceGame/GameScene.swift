@@ -21,7 +21,9 @@ struct Physics {
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var score = 0;
-    var scoreLabel = UILabel();
+    var scoreNode = SKLabelNode();
+    
+    var lifeNodes : [SKSpriteNode] = [];
     
     var background = SKSpriteNode(imageNamed: "background.jpg");
     
@@ -35,21 +37,67 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scorePerEnemyKilled = 50;
     var scorePerBulletIntercepted = 10;
     var gameDifficulty = 1;
-    var initialLives = 3;
+    var remainingLives = 3;
+    var timeElapsed = 0.0;
+    
+    var gamePaused = false;
     
     var hasAccelerometer = true;
     
     var playingSceneXOffset = CGFloat(200.0);
     
-    override func didMoveToView(view: SKView) {
-        // add constraint to scene to ensure no object leaves the scene
-        // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame);
-        // self.physicsBody?.categoryBitMask = Physics.GameSceneBoundaries;
+    func createHUD() {
+        let hud = SKSpriteNode(color: UIColor.blackColor(), size: CGSizeMake(self.size.width, self.size.height * 0.05))
+        hud.anchorPoint = CGPointMake(0, 0);
+        hud.position = CGPointMake(0, self.size.height - hud.size.height);
+        hud.zPosition = 10;
+        self.addChild(hud);
         
+        // Display the remaining lifes
+        // Add icons to display the remaining lifes
+        // Reuse the Spaceship image: Scale and position releative to the HUD size
+        let lifeSize = CGSizeMake(hud.size.height - 10, hud.size.height - 10)
+        
+        for(var i = 0; i < self.remainingLives; i++) {
+            let tmpNode = SKSpriteNode(imageNamed: "ship.png");
+            lifeNodes.append(tmpNode);
+            tmpNode.size = lifeSize;
+            tmpNode.position = CGPointMake((hud.size.width/3.5) + tmpNode.size.width * 1.1 * (1.0 + CGFloat(i)), 15);
+            hud.addChild(tmpNode);
+        }
+        
+        // Pause button container and label
+        // Needed to increase the touchable area
+        // Names will be used to identify these elements in the touch handler
+        let pauseContainer = SKSpriteNode();
+        pauseContainer.position = CGPointMake(hud.size.width/1.5, 15);
+        pauseContainer.size = CGSizeMake(hud.size.height * 3, hud.size.height * 1.5);
+        pauseContainer.name = "PauseButtonContainer";
+        hud.addChild(pauseContainer);
+        
+        let pauseButton = SKLabelNode();
+        pauseButton.position = CGPointMake(hud.size.width/1.5, 10);
+        pauseButton.text = "||";
+        pauseButton.fontSize = hud.size.height * 0.80;
+        pauseButton.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center;
+        pauseButton.name = "PauseButton";
+        hud.addChild(pauseButton);
+        
+        // Display the current score
+        self.score = 0;
+        self.scoreNode.position = CGPointMake(hud.size.width/2, 5);
+        self.scoreNode.text = "0";
+        self.scoreNode.fontSize = hud.size.height;
+        hud.addChild(self.scoreNode);
+    }
+    
+    override func didMoveToView(view: SKView) {
         background.position = CGPointMake(0, 0);
         background.zPosition = -100;
         
         self.addChild(background);
+        
+        createHUD();
         
         physicsWorld.contactDelegate = self;
         
@@ -63,12 +111,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(Player);
         
-        scoreLabel.text = "\(score)";
-        scoreLabel = UILabel(frame: CGRect(x: 20, y: 10, width: 100, height: 20));
-        scoreLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.0);
-        scoreLabel.textColor = UIColor.whiteColor();
+        //scoreLabel.text = "\(score)";
+        //scoreLabel = UILabel(frame: CGRect(x: 20, y: 10, width: 100, height: 20));
+        //scoreLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.0);
+        //scoreLabel.textColor = UIColor.whiteColor();
         
-        self.view?.addSubview(scoreLabel);
+        //self.view?.addSubview(scoreLabel);
         
         let playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: Selector("ShootProjectiles"), userInfo: nil, repeats: true);
         
@@ -100,12 +148,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
          // Enable to work with acceleration instead of taps
-        if(!hasAccelerometer) {
-            return;
-        }
+        
+        if(!self.gamePaused) {
+        
+            if(!hasAccelerometer) {
+                return;
+            }
         
           let action = SKAction.moveToX(destX, duration: 0.2);
           self.Player.runAction(action);
+        }
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
@@ -129,11 +181,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bullet.removeFromParent();
         score += scorePerEnemyKilled;
         
-        scoreLabel.text = "\(score)";
+        self.scoreNode.text = "\(score)";
     }
     
     func CollisionWithPlayer(enemy: SKSpriteNode, player: SKSpriteNode) {
         // take away 1 life, perform check whether there's more life else go game over
+        self.remainingLives--;
+        
+        if(self.remainingLives <= 0) {
+            GameOver();
+        }
+        
     }
     
     func CollisionProjectileWithEnemyProjectile(projectile: SKSpriteNode, enemyProjectile: SKSpriteNode) {
@@ -193,7 +251,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        /* Called when a touch begins */
         
         for touch in touches {
-            let location = touch.locationInNode(self)
+            let location = touch.locationInNode(self);
+            
+            let node = self.nodeAtPoint(location);
+            
+            if((node.name == "PauseButton") || (node.name == "PauseButtonContainer")) {
+                
+                pauseGame();
+            }
             
             // Player.position.x = location.x;
             
@@ -201,6 +266,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             Player.runAction(action);
         }
+    }
+    
+    func pauseGame() {
+        // TODO:
+        NSLog("Hi!");
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
