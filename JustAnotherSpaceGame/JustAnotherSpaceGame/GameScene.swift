@@ -161,18 +161,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
-        let bodyA : SKPhysicsBody = contact.bodyA;
-        let bodyB : SKPhysicsBody = contact.bodyB;
+        if(!self.gamePaused) {
+            let bodyA : SKPhysicsBody = contact.bodyA;
+            let bodyB : SKPhysicsBody = contact.bodyB;
         
-        if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
-            || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) {
-            CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
+            if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
+                || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) {
+                    CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
+            }
+        
+            // if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player)
+            //    || (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy)) {
+            //        CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
+            //}
         }
-        
-        // if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player)
-        //    || (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy)) {
-        //        CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
-        //}
     }
     
     func CollisionWithProjectile(enemy: SKSpriteNode, bullet: SKSpriteNode) {
@@ -186,7 +188,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func CollisionWithPlayer(enemy: SKSpriteNode, player: SKSpriteNode) {
         // take away 1 life, perform check whether there's more life else go game over
-        self.remainingLives--;
+        if(self.remainingLives > 0) {
+            self.remainingLives--;
+            self.lifeNodes[remainingLives].alpha = 0.0;
+        }
         
         if(self.remainingLives <= 0) {
             GameOver();
@@ -204,6 +209,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func ShootProjectiles(){
+        if(!self.gamePaused) {
         let projectile = SKSpriteNode(imageNamed: "proj3.png");
         
         projectile.zPosition = -1;
@@ -221,9 +227,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         projectile.physicsBody?.contactTestBitMask = Physics.Enemy;
         
         self.addChild(projectile);
+        }
     }
     
     func SpawnBaddies(){
+        if(!self.gamePaused) {
         let enemy = SKSpriteNode(imageNamed: "ship1.png");
         enemy.size.height = enemy.size.height / 2;
         enemy.size.width = enemy.size.width / 2;
@@ -245,6 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody?.contactTestBitMask = Physics.Projectile;
         
         self.addChild(enemy);
+        }
     }
     
    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -271,6 +280,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func pauseGame() {
         // TODO:
         NSLog("Hi!");
+        
+        self.gamePaused = true;
+        
+        let alert = UIAlertController(title: "Game Paused", message: "", preferredStyle: UIAlertControllerStyle.Alert);
+        
+        alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.Default)  { _ in
+            self.gamePaused = false;
+            });
+        
+        self.view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
