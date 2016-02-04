@@ -14,6 +14,8 @@ struct Physics {
     static let Projectile : UInt32 = 2;
     static let Player : UInt32 = 3;
     static let EnemyProjectile : UInt32 = 4;
+    
+    static let GameSceneBoundaries : UInt32 = 5;
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -33,8 +35,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scorePerEnemyKilled = 50;
     var scorePerBulletIntercepted = 1;
     var gameDifficulty = 1;
+    var initialLives = 3;
     
     override func didMoveToView(view: SKView) {
+        // add constraint to scene to ensure no object leaves the scene
+        self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame);
+        self.physicsBody?.categoryBitMask = Physics.GameSceneBoundaries;
+        
         background.position = CGPointMake(0, 0);
         background.zPosition = -100;
         
@@ -63,17 +70,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("SpawnBaddies"), userInfo: nil, repeats: true);
         
-        if motionManager.accelerometerAvailable == true {
+        if (motionManager.accelerometerAvailable == true) {
             motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler:{
                 data, error in
                 
                 let currentX = self.Player.position.x;
                 
                 if data!.acceleration.x < 0 {
-                    self.destX = currentX + CGFloat(data!.acceleration.x * 300);
+                    self.destX = currentX + CGFloat(data!.acceleration.x * 400);
                 }
                 else if data!.acceleration.x > 0 {
-                    self.destX = currentX + CGFloat(data!.acceleration.x * 300);
+                    self.destX = currentX + CGFloat(data!.acceleration.x * 400);
                 }
             });
         } else {
@@ -84,8 +91,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
          // Enable to work with acceleration instead of taps
-         // let action = SKAction.moveToX(destX, duration: 0.5);
-         // self.Player.runAction(action);
+          let action = SKAction.moveToX(destX, duration: 1);
+          self.Player.runAction(action);
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
@@ -96,6 +103,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) {
             CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
         }
+        
+        // if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player)
+        //    || (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy)) {
+        //        CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
+        //}
     }
     
     func CollisionWithProjectile(enemy: SKSpriteNode, bullet: SKSpriteNode) {
@@ -117,6 +129,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func GameOver() {
         // navigate to game over screen where score is displayed
+        self.view?.presentScene(GameOverScene());
     }
     
     func ShootProjectiles(){
@@ -137,7 +150,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         projectile.physicsBody?.contactTestBitMask = Physics.Enemy;
         
         self.addChild(projectile);
-        
     }
     
     func SpawnBaddies(){
@@ -165,7 +177,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(enemy);
     }
-   // /*
+    
    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
        /* Called when a touch begins */
         
@@ -190,5 +202,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             Player.runAction(action);
         }
-    } // */
+    }
 }

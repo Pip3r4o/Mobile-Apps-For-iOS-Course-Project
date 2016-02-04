@@ -78,12 +78,12 @@
 				D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */,
 				D0D28F711C624B39004DB7B3 /* GameScene.swift */,
 				D0D28F731C624B39004DB7B3 /* GameViewController.swift */,
+				D06319B51C630E1100670704 /* GameOverScene.swift */,
 				D0D28F751C624B39004DB7B3 /* Main.storyboard */,
 				D0D28F831C626094004DB7B3 /* SupportingFiles */,
 				D0D28F781C624B39004DB7B3 /* Assets.xcassets */,
 				D0D28F7A1C624B39004DB7B3 /* LaunchScreen.storyboard */,
 				D0D28F7D1C624B39004DB7B3 /* Info.plist */,
-				D06319B51C630E1100670704 /* GameOverScene.swift */,
 			);
 			path = JustAnotherSpaceGame;
 			sourceTree = "<group>";

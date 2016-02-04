@@ -7,3 +7,11 @@
 //
 
 import Foundation
+import SpriteKit
+
+class GameOverScene : SKScene {
+    
+    override func didMoveToView(view: SKView) {
+        
+    }
+}
