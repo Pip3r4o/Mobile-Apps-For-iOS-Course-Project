@@ -31,14 +31,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var motionManager = CMMotionManager();
     var destX = CGFloat(0.0);
     
-    var enemySpawnRate = 0.5;
-    var enemyVelocity = 3.0;
-    var shootingRate = 0.5;
+    var enemySpawnTimer : NSTimer? = nil;
+    var playerProjectilesTimer : NSTimer? = nil;
+    
+    var enemySpawnRate = 1.0;
+    var minEnemyVelocity = 25;
+    var maxEnemyVelocity = 45;
+    var shootingRate = 0.4;
     var scorePerEnemyKilled = 50;
-    var scorePerBulletIntercepted = 10;
+    var scorePerBulletIntercepted = 100;
     var gameDifficulty = 1;
-    var remainingLives = 3;
+    var remainingLives = 4;
     var timeElapsed = 0.0;
+    var playerIsInvincible = false;
     
     var gamePaused = false;
     
@@ -111,16 +116,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(Player);
         
-        //scoreLabel.text = "\(score)";
-        //scoreLabel = UILabel(frame: CGRect(x: 20, y: 10, width: 100, height: 20));
-        //scoreLabel.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.0);
-        //scoreLabel.textColor = UIColor.whiteColor();
+        playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(shootingRate), target: self, selector: Selector("ShootProjectiles"), userInfo: nil, repeats: true);
         
-        //self.view?.addSubview(scoreLabel);
-        
-        let playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: Selector("ShootProjectiles"), userInfo: nil, repeats: true);
-        
-        let enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("SpawnBaddies"), userInfo: nil, repeats: true);
+        enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("SpawnBaddies"), userInfo: nil, repeats: true);
         
         if (motionManager.accelerometerAvailable == true) {
             motionManager.accelerometerUpdateInterval = 0.1;
@@ -129,7 +127,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 let currentX = self.Player.position.x;
                 
-                self.destX = currentX + CGFloat(data!.acceleration.x * 350);
+                self.destX = currentX + CGFloat(data!.acceleration.x * 400);
                 
                 if(self.destX > (self.size.width / 2) + self.playingSceneXOffset) {
                     self.destX = (self.size.width / 2) + self.playingSceneXOffset;
@@ -147,16 +145,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
-         // Enable to work with acceleration instead of taps
+        
+        if(self.score / self.gameDifficulty > 500) {
+            self.gameDifficulty++;
+            
+            if(self.enemySpawnRate > 0.3) {
+                self.enemySpawnRate -= 0.1;
+                
+                enemySpawnTimer?.invalidate();
+                enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("SpawnBaddies"), userInfo: nil, repeats: true);
+            }
+        }
         
         if(!self.gamePaused) {
-        
+            
             if(!hasAccelerometer) {
                 return;
             }
-        
-          let action = SKAction.moveToX(destX, duration: 0.2);
-          self.Player.runAction(action);
+            
+            let action = SKAction.moveToX(destX, duration: 0.2);
+            self.Player.runAction(action);
         }
     }
     
@@ -164,12 +172,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(!self.gamePaused) {
             let bodyA : SKPhysicsBody = contact.bodyA;
             let bodyB : SKPhysicsBody = contact.bodyB;
-        
+            
             if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
                 || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) {
                     CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
             }
-        
+            
             if (bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player) {
                 CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
             } else if (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy) {
@@ -189,20 +197,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func CollisionWithPlayer(enemy: SKSpriteNode, player: SKSpriteNode) {
         // take away 1 life, perform check whether there's more life else go game over
+        // play sound
         enemy.removeFromParent();
         
-        if(self.remainingLives > 0) {
-            self.remainingLives--;
-            self.lifeNodes[remainingLives].alpha = 0.0;
-        }
-        
-        if(self.remainingLives <= 0) {
-            GameOver();
+        if(!self.gamePaused) {
+            if(!self.playerIsInvincible) {
+                self.playerIsInvincible = true;
+                NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: ("ResetInvincibleState"), userInfo: nil, repeats: false);
+                
+                if(self.remainingLives > 0) {
+                    self.remainingLives--;
+                    self.lifeNodes[remainingLives].alpha = 0.0;
+                }
+                
+                if(self.remainingLives <= 0) {
+                    GameOver();
+                }
+            }
         }
     }
     
     func CollisionProjectileWithEnemyProjectile(projectile: SKSpriteNode, enemyProjectile: SKSpriteNode) {
         // destroy both projectiles;
+    }
+    
+    func ResetInvincibleState() {
+        self.playerIsInvincible = false;
     }
     
     func GameOver() {
@@ -212,54 +232,57 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func ShootProjectiles(){
         if(!self.gamePaused) {
-        let projectile = SKSpriteNode(imageNamed: "proj3.png");
-        
-        projectile.zPosition = -1;
-        projectile.position = CGPointMake(Player.position.x, Player.position.y);
-        
-        let action = SKAction.moveToY(self.size.height + projectile.size.height, duration: 1);
-        let actionDone = SKAction.removeFromParent();
-        
-        projectile.runAction(SKAction.sequence([action, actionDone]));
-        
-        projectile.physicsBody = SKPhysicsBody(rectangleOfSize: projectile.size);
-        projectile.physicsBody?.affectedByGravity = false;
-        projectile.physicsBody?.dynamic = false;
-        projectile.physicsBody?.categoryBitMask = Physics.Projectile;
-        projectile.physicsBody?.contactTestBitMask = Physics.Enemy;
-        
-        self.addChild(projectile);
+            let projectile = SKSpriteNode(imageNamed: "proj3.png");
+            
+            projectile.zPosition = -1;
+            projectile.position = CGPointMake(Player.position.x, Player.position.y);
+            
+            let action = SKAction.moveToY(self.size.height + projectile.size.height, duration: 1);
+            let actionDone = SKAction.removeFromParent();
+            
+            projectile.runAction(SKAction.sequence([action, actionDone]));
+            
+            projectile.physicsBody = SKPhysicsBody(rectangleOfSize: projectile.size);
+            projectile.physicsBody?.affectedByGravity = false;
+            projectile.physicsBody?.dynamic = false;
+            projectile.physicsBody?.categoryBitMask = Physics.Projectile;
+            projectile.physicsBody?.contactTestBitMask = Physics.Enemy;
+            
+            self.addChild(projectile);
         }
     }
     
     func SpawnBaddies(){
         if(!self.gamePaused) {
-        let enemy = SKSpriteNode(imageNamed: "ship1.png");
-        enemy.size.height = enemy.size.height / 2;
-        enemy.size.width = enemy.size.width / 2;
-        
-        let minX : UInt32 = UInt32((self.size.width / 2) - self.playingSceneXOffset);
-        let maxX : UInt32 = UInt32((self.size.width / 2) + self.playingSceneXOffset);
-        
-        enemy.position = CGPoint(x: CGFloat(arc4random_uniform(maxX - minX) + minX), y: self.size.height);
-        
-        let action = SKAction.moveToY(0 - enemy.size.height, duration: enemyVelocity);
-        let actionDone = SKAction.removeFromParent();
-        
-        enemy.runAction(SKAction.sequence([action, actionDone]));
-        
-        enemy.physicsBody = SKPhysicsBody(rectangleOfSize: enemy.size);
-        enemy.physicsBody?.affectedByGravity = false;
-        enemy.physicsBody?.dynamic = true;
-        enemy.physicsBody?.categoryBitMask = Physics.Enemy;
-        enemy.physicsBody?.contactTestBitMask = Physics.Projectile | Physics.Player;
-        
-        self.addChild(enemy);
+            let enemy = SKSpriteNode(imageNamed: "ship1.png");
+            enemy.size.height = enemy.size.height / 2;
+            enemy.size.width = enemy.size.width / 2;
+            
+            let minX : UInt32 = UInt32((self.size.width / 2) - self.playingSceneXOffset);
+            let maxX : UInt32 = UInt32((self.size.width / 2) + self.playingSceneXOffset);
+            
+            enemy.position = CGPoint(x: CGFloat(arc4random_uniform(maxX - minX) + minX), y: self.size.height);
+            
+            let enemySpeed = (Double)(arc4random_uniform(UInt32(self.maxEnemyVelocity) - UInt32(self.minEnemyVelocity)) + UInt32(self.minEnemyVelocity)) / 10;
+            
+            let action = SKAction.moveToY(0 - enemy.size.height, duration: enemySpeed);
+            let actionDone = SKAction.removeFromParent();
+            
+            enemy.runAction(SKAction.sequence([action, actionDone]));
+            
+            enemy.physicsBody = SKPhysicsBody(rectangleOfSize: enemy.size);
+            enemy.physicsBody?.affectedByGravity = false;
+            enemy.physicsBody?.dynamic = true;
+            enemy.physicsBody?.categoryBitMask = Physics.Enemy;
+            enemy.physicsBody?.contactTestBitMask = Physics.Projectile | Physics.Player;
+            
+            self.addChild(enemy);
+            NSLog("Ping");
         }
     }
     
-   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-       /* Called when a touch begins */
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        /* Called when a touch begins */
         
         for touch in touches {
             let location = touch.locationInNode(self);
@@ -292,7 +315,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             });
         
         self.view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
-
+        
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
