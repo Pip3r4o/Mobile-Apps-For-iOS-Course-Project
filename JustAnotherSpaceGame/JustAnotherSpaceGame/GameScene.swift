@@ -170,10 +170,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
             }
         
-            // if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player)
-            //    || (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy)) {
-            //        CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
-            //}
+            if (bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player) {
+                CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
+            } else if (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy) {
+                CollisionWithPlayer(bodyB.node as! SKSpriteNode, player: bodyA.node as! SKSpriteNode);
+            }
         }
     }
     
@@ -188,6 +189,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func CollisionWithPlayer(enemy: SKSpriteNode, player: SKSpriteNode) {
         // take away 1 life, perform check whether there's more life else go game over
+        enemy.removeFromParent();
+        
         if(self.remainingLives > 0) {
             self.remainingLives--;
             self.lifeNodes[remainingLives].alpha = 0.0;
@@ -196,7 +199,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(self.remainingLives <= 0) {
             GameOver();
         }
-        
     }
     
     func CollisionProjectileWithEnemyProjectile(projectile: SKSpriteNode, enemyProjectile: SKSpriteNode) {
@@ -250,7 +252,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody?.affectedByGravity = false;
         enemy.physicsBody?.dynamic = true;
         enemy.physicsBody?.categoryBitMask = Physics.Enemy;
-        enemy.physicsBody?.contactTestBitMask = Physics.Projectile;
+        enemy.physicsBody?.contactTestBitMask = Physics.Projectile | Physics.Player;
         
         self.addChild(enemy);
         }
