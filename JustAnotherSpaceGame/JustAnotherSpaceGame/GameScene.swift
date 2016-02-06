@@ -35,6 +35,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playerProjectilesTimer : NSTimer? = nil;
     
     var enemySpawnRate = 1.0;
+    var enemySpawnRateDelta = 0.05;
     var minEnemyVelocity = 25;
     var maxEnemyVelocity = 45;
     var shootingRate = 0.4;
@@ -150,8 +151,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(self.score / self.gameDifficulty > 500) {
             self.gameDifficulty++;
             
-            if(self.enemySpawnRate > 0.3) {
-                self.enemySpawnRate -= 0.1;
+            if(self.enemySpawnRate > 0.45) {
+                self.enemySpawnRate -= enemySpawnRateDelta;
+                
+                NSLog("Speed: %f", self.enemySpawnRate);
                 
                 enemySpawnTimer?.invalidate();
                 enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("SpawnBaddies"), userInfo: nil, repeats: true);
@@ -175,7 +178,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let bodyB : SKPhysicsBody = contact.bodyB;
             
             if (((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
-                || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) && !self.playerIsInvincible) {
+                || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy))) {
                      try! CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
             }
             
@@ -203,12 +206,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if(!self.gamePaused) {
             if(!self.playerIsInvincible) {
-                self.playerIsInvincible = true;
-                NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: ("ResetInvincibleState"), userInfo: nil, repeats: false);
                 
                 if(self.remainingLives > 0) {
                     self.remainingLives--;
                     self.lifeNodes[remainingLives].alpha = 0.0;
+                    self.playerIsInvincible = true;
+                    NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: ("ResetInvincibleState"), userInfo: nil, repeats: false);
+                    
+                    Pulse(self.Player);
                 }
                 
                 if(self.remainingLives <= 0) {
@@ -216,6 +221,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         }
+    }
+    
+    func Pulse(node: SKSpriteNode) {
+        let fadeOut = SKAction.fadeOutWithDuration(0.5);
+        let fadeIn = SKAction.fadeInWithDuration(0.5);
+        
+        let pulse = SKAction.sequence([fadeOut, fadeIn, fadeOut, fadeIn, fadeOut, fadeIn]);
+        
+        node.runAction(pulse);
     }
     
     func CollisionProjectileWithEnemyProjectile(projectile: SKSpriteNode, enemyProjectile: SKSpriteNode) {
@@ -228,7 +242,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func GameOver() {
         // navigate to game over screen where score is displayed
-        var transition:SKTransition = SKTransition.fadeWithDuration(1);
+        self.motionManager.stopAccelerometerUpdates();
+        
+        self.paused = true;
+        let transition:SKTransition = SKTransition.revealWithDirection(SKTransitionDirection.Down, duration: 0.2);
         
         self.view?.presentScene(GameOverScene(), transition: transition);
     }
@@ -236,7 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func ShootProjectiles(){
         if(!self.gamePaused) {
             let projectile = SKSpriteNode(imageNamed: "proj3.png");
-            
+            projectile.size.width = projectile.size.width * 1.5;
             projectile.zPosition = -1;
             projectile.position = CGPointMake(Player.position.x, Player.position.y);
             
@@ -276,6 +293,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             enemy.physicsBody = SKPhysicsBody(rectangleOfSize: enemy.size);
             enemy.physicsBody?.affectedByGravity = false;
             enemy.physicsBody?.dynamic = true;
+            enemy.physicsBody?.restitution = 1;
             enemy.physicsBody?.allowsRotation = false;
             enemy.physicsBody?.categoryBitMask = Physics.Enemy;
             enemy.physicsBody?.contactTestBitMask = Physics.Projectile | Physics.Player;
@@ -309,10 +327,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func pauseGame() {
         self.gamePaused = true;
         
+        self.paused = true;
+        
         let alert = UIAlertController(title: "Game Paused", message: "", preferredStyle: UIAlertControllerStyle.Alert);
         
         alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.Default)  { _ in
             self.gamePaused = false;
+            self.paused = false;
             });
         
         self.view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
@@ -322,8 +343,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             let location = touch.locationInNode(self)
-            
-            // Player.position.x = location.x;
             
             let action = SKAction.moveToX(location.x, duration: 0.2);
             
