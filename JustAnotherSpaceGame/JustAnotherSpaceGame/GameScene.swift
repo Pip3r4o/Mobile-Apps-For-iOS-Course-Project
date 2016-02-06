@@ -185,7 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if (bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player) {
                 CollisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
             } else if (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy) {
-                CollisionWithPlayer(bodyB.node as! SKSpriteNode, player: bodyA.node as! SKSpriteNode);
+                CollisionWithPlayer((bodyB.node as? SKSpriteNode)!, player: (bodyA.node as? SKSpriteNode)!);
             }
         }
     }
@@ -247,7 +247,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.paused = true;
         let transition:SKTransition = SKTransition.revealWithDirection(SKTransitionDirection.Down, duration: 0.2);
         
-        self.view?.presentScene(GameOverScene(), transition: transition);
+        self.view?.presentScene(GameOverScene(size: CGSize(width: self.size.width, height: self.size.height)), transition: transition);
     }
     
     func ShootProjectiles(){
@@ -303,8 +303,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        /* Called when a touch begins */
-        
         for touch in touches {
             let location = touch.locationInNode(self);
             

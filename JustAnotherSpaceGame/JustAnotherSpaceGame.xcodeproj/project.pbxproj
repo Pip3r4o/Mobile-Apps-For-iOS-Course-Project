@@ -10,6 +10,9 @@
 		D00B4E281C6271AA00EEDAFC /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D00B4E271C6271AA00EEDAFC /* GameScene.sks */; };
 		D06319B61C630E1100670704 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D06319B51C630E1100670704 /* GameOverScene.swift */; };
 		D07374211C63091300D6CBE0 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D07374201C63091200D6CBE0 /* background.jpg */; };
+		D08E77791C667DBB00C095D0 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E77781C667DBA00C095D0 /* Player.swift */; };
+		D08E777B1C667DCF00C095D0 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E777A1C667DCF00C095D0 /* Enemy.swift */; };
+		D08E777D1C667EE000C095D0 /* Projectile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E777C1C667EE000C095D0 /* Projectile.swift */; };
 		D0B2FBCD1C663B31006CC92C /* MainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B2FBCC1C663B31006CC92C /* MainMenu.m */; };
 		D0D28F6E1C624B39004DB7B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */; };
 		D0D28F721C624B39004DB7B3 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F711C624B39004DB7B3 /* GameScene.swift */; };
@@ -29,6 +32,9 @@
 		D00B4E271C6271AA00EEDAFC /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		D06319B51C630E1100670704 /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		D07374201C63091200D6CBE0 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpg; sourceTree = "<group>"; };
+		D08E77781C667DBA00C095D0 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		D08E777A1C667DCF00C095D0 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
+		D08E777C1C667EE000C095D0 /* Projectile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Projectile.swift; sourceTree = "<group>"; };
 		D0B2FBCA1C663B30006CC92C /* JustAnotherSpaceGame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JustAnotherSpaceGame-Bridging-Header.h"; sourceTree = "<group>"; };
 		D0B2FBCB1C663B31006CC92C /* MainMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenu.h; sourceTree = "<group>"; };
 		D0B2FBCC1C663B31006CC92C /* MainMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenu.m; sourceTree = "<group>"; };
@@ -59,6 +65,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D08E77771C667D8400C095D0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D08E77781C667DBA00C095D0 /* Player.swift */,
+				D08E777A1C667DCF00C095D0 /* Enemy.swift */,
+				D08E777C1C667EE000C095D0 /* Projectile.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		D0D28F611C624B38004DB7B3 = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +94,7 @@
 		D0D28F6C1C624B38004DB7B3 /* JustAnotherSpaceGame */ = {
 			isa = PBXGroup;
 			children = (
+				D08E77771C667D8400C095D0 /* Models */,
 				D00B4E271C6271AA00EEDAFC /* GameScene.sks */,
 				D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */,
 				D0D28F711C624B39004DB7B3 /* GameScene.swift */,
@@ -189,10 +206,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D08E777B1C667DCF00C095D0 /* Enemy.swift in Sources */,
 				D0B2FBCD1C663B31006CC92C /* MainMenu.m in Sources */,
 				D0D28F721C624B39004DB7B3 /* GameScene.swift in Sources */,
 				D0D28F741C624B39004DB7B3 /* GameViewController.swift in Sources */,
+				D08E777D1C667EE000C095D0 /* Projectile.swift in Sources */,
 				D06319B61C630E1100670704 /* GameOverScene.swift in Sources */,
+				D08E77791C667DBB00C095D0 /* Player.swift in Sources */,
 				D0D28F6E1C624B39004DB7B3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
