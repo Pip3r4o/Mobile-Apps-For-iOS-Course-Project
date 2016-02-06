@@ -14,7 +14,8 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let scene = GameScene(fileNamed:"GameScene") {
+        if let scene : SKScene = MainMenu() {
+        //if let scene = GameScene(fileNamed:"GameScene") {
             // Configure the view.
             let skView = self.view as! SKView
             skView.showsFPS = true
@@ -24,9 +25,12 @@ class GameViewController: UIViewController {
             skView.ignoresSiblingOrder = true
             
             /* Set the scale mode to scale to fit the window */
-            scene.scaleMode = .AspectFill
+            scene.size = CGSize(width: skView.frame.size.width, height: skView.frame.size.height);
+            scene.scaleMode = .AspectFill;
             
             skView.presentScene(scene)
+        } else {
+            NSLog("Failed to load MainMenu");
         }
     }
 

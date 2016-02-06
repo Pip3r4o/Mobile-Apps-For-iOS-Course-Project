@@ -12,6 +12,6 @@ import SpriteKit
 class GameOverScene : SKScene {
     
     override func didMoveToView(view: SKView) {
-        
+        self.backgroundColor = SKColor(red: 0.2, green: 1, blue: 0.7, alpha: 1);
     }
 }

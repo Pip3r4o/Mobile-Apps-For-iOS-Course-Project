@@ -49,7 +49,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var hasAccelerometer = true;
     
-    var playingSceneXOffset = CGFloat(200.0);
+    var playingSceneXOffset = CGFloat(0);
     
     func createHUD() {
         let hud = SKSpriteNode(color: UIColor.blackColor(), size: CGSizeMake(self.size.width, self.size.height * 0.05))
@@ -67,7 +67,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let tmpNode = SKSpriteNode(imageNamed: "ship.png");
             lifeNodes.append(tmpNode);
             tmpNode.size = lifeSize;
-            tmpNode.position = CGPointMake((hud.size.width/3.5) + tmpNode.size.width * 1.1 * (1.0 + CGFloat(i)), 15);
+            tmpNode.position = CGPointMake((hud.size.width/12) + tmpNode.size.width * 1.1 * (1.0 + CGFloat(i)), 15);
             hud.addChild(tmpNode);
         }
         
@@ -75,13 +75,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Needed to increase the touchable area
         // Names will be used to identify these elements in the touch handler
         let pauseContainer = SKSpriteNode();
-        pauseContainer.position = CGPointMake(hud.size.width/1.5, 15);
+        pauseContainer.position = CGPointMake(hud.size.width/1.2, 15);
         pauseContainer.size = CGSizeMake(hud.size.height * 3, hud.size.height * 1.5);
         pauseContainer.name = "PauseButtonContainer";
         hud.addChild(pauseContainer);
         
         let pauseButton = SKLabelNode();
-        pauseButton.position = CGPointMake(hud.size.width/1.5, 10);
+        pauseButton.position = CGPointMake(hud.size.width/1.2, 10);
         pauseButton.text = "||";
         pauseButton.fontSize = hud.size.height * 0.80;
         pauseButton.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center;
@@ -106,7 +106,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self;
         
-        Player.position = CGPointMake(self.size.width/2, self.size.height/8);
+        Player.size = CGSizeMake(Player.size.width / 2, Player.size.height / 2);
+        Player.position = CGPointMake(self.size.width/2, self.size.height/10);
         Player.physicsBody = SKPhysicsBody(rectangleOfSize: Player.size);
         
         Player.physicsBody?.affectedByGravity = false;
@@ -127,14 +128,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 let currentX = self.Player.position.x;
                 
-                self.destX = currentX + CGFloat(data!.acceleration.x * 400);
+                self.destX = currentX + CGFloat(data!.acceleration.x * 350);
                 
-                if(self.destX > (self.size.width / 2) + self.playingSceneXOffset) {
-                    self.destX = (self.size.width / 2) + self.playingSceneXOffset;
+                if(self.destX > self.size.width + self.playingSceneXOffset) {
+                    self.destX = self.size.width + self.playingSceneXOffset;
                 }
                 
-                if(self.destX < (self.size.width / 2) - self.playingSceneXOffset) {
-                    self.destX = (self.size.width / 2) - self.playingSceneXOffset;
+                if(self.destX < 0 - self.playingSceneXOffset) {
+                    self.destX = 0 - self.playingSceneXOffset;
                 }
             });
         } else {
@@ -173,9 +174,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let bodyA : SKPhysicsBody = contact.bodyA;
             let bodyB : SKPhysicsBody = contact.bodyB;
             
-            if ((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
-                || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) {
-                    CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
+            if (((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
+                || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy)) && !self.playerIsInvincible) {
+                     try! CollisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
             }
             
             if (bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player) {
@@ -227,7 +228,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func GameOver() {
         // navigate to game over screen where score is displayed
-        self.view?.presentScene(GameOverScene());
+        var transition:SKTransition = SKTransition.fadeWithDuration(1);
+        
+        self.view?.presentScene(GameOverScene(), transition: transition);
     }
     
     func ShootProjectiles(){
@@ -255,17 +258,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func SpawnBaddies(){
         if(!self.gamePaused) {
             let enemy = SKSpriteNode(imageNamed: "ship1.png");
-            enemy.size.height = enemy.size.height / 2;
-            enemy.size.width = enemy.size.width / 2;
+            enemy.size.height = enemy.size.height / 3;
+            enemy.size.width = enemy.size.width / 3;
             
-            let minX : UInt32 = UInt32((self.size.width / 2) - self.playingSceneXOffset);
-            let maxX : UInt32 = UInt32((self.size.width / 2) + self.playingSceneXOffset);
+            let minX : UInt32 = UInt32(0 - self.playingSceneXOffset);
+            let maxX : UInt32 = UInt32((self.size.width) + self.playingSceneXOffset);
             
             enemy.position = CGPoint(x: CGFloat(arc4random_uniform(maxX - minX) + minX), y: self.size.height);
             
             let enemySpeed = (Double)(arc4random_uniform(UInt32(self.maxEnemyVelocity) - UInt32(self.minEnemyVelocity)) + UInt32(self.minEnemyVelocity)) / 10;
             
-            let action = SKAction.moveToY(0 - enemy.size.height, duration: enemySpeed);
+            let action = SKAction.moveToY(0, duration: enemySpeed);
             let actionDone = SKAction.removeFromParent();
             
             enemy.runAction(SKAction.sequence([action, actionDone]));
@@ -273,11 +276,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             enemy.physicsBody = SKPhysicsBody(rectangleOfSize: enemy.size);
             enemy.physicsBody?.affectedByGravity = false;
             enemy.physicsBody?.dynamic = true;
+            enemy.physicsBody?.allowsRotation = false;
             enemy.physicsBody?.categoryBitMask = Physics.Enemy;
             enemy.physicsBody?.contactTestBitMask = Physics.Projectile | Physics.Player;
             
             self.addChild(enemy);
-            NSLog("Ping");
         }
     }
     
@@ -292,20 +295,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if((node.name == "PauseButton") || (node.name == "PauseButtonContainer")) {
                 
                 pauseGame();
+            } else {
+            
+                // Player.position.x = location.x;
+            
+                let action = SKAction.moveToX(location.x, duration: 0.2);
+            
+                Player.runAction(action);
             }
-            
-            // Player.position.x = location.x;
-            
-            let action = SKAction.moveToX(location.x, duration: 0.2);
-            
-            Player.runAction(action);
         }
     }
     
     func pauseGame() {
-        // TODO:
-        NSLog("Hi!");
-        
         self.gamePaused = true;
         
         let alert = UIAlertController(title: "Game Paused", message: "", preferredStyle: UIAlertControllerStyle.Alert);
