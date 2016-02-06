@@ -13,6 +13,8 @@
 		D08E77791C667DBB00C095D0 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E77781C667DBA00C095D0 /* Player.swift */; };
 		D08E777B1C667DCF00C095D0 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E777A1C667DCF00C095D0 /* Enemy.swift */; };
 		D08E777D1C667EE000C095D0 /* Projectile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E777C1C667EE000C095D0 /* Projectile.swift */; };
+		D08E77801C669BA500C095D0 /* blast.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D08E777E1C669BA500C095D0 /* blast.mp3 */; };
+		D08E77811C669BA500C095D0 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D08E777F1C669BA500C095D0 /* music.mp3 */; };
 		D0B2FBCD1C663B31006CC92C /* MainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B2FBCC1C663B31006CC92C /* MainMenu.m */; };
 		D0D28F6E1C624B39004DB7B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */; };
 		D0D28F721C624B39004DB7B3 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F711C624B39004DB7B3 /* GameScene.swift */; };
@@ -35,6 +37,8 @@
 		D08E77781C667DBA00C095D0 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		D08E777A1C667DCF00C095D0 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		D08E777C1C667EE000C095D0 /* Projectile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Projectile.swift; sourceTree = "<group>"; };
+		D08E777E1C669BA500C095D0 /* blast.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blast.mp3; sourceTree = "<group>"; };
+		D08E777F1C669BA500C095D0 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 		D0B2FBCA1C663B30006CC92C /* JustAnotherSpaceGame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JustAnotherSpaceGame-Bridging-Header.h"; sourceTree = "<group>"; };
 		D0B2FBCB1C663B31006CC92C /* MainMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenu.h; sourceTree = "<group>"; };
 		D0B2FBCC1C663B31006CC92C /* MainMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenu.m; sourceTree = "<group>"; };
@@ -115,6 +119,8 @@
 		D0D28F831C626094004DB7B3 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				D08E777E1C669BA500C095D0 /* blast.mp3 */,
+				D08E777F1C669BA500C095D0 /* music.mp3 */,
 				D07374201C63091200D6CBE0 /* background.jpg */,
 				D0D28F841C6260B7004DB7B3 /* proj1.png */,
 				D0D28F851C6260B7004DB7B3 /* proj2.png */,
@@ -190,9 +196,11 @@
 				D0D28F8E1C6260B7004DB7B3 /* ship.png in Resources */,
 				D0D28F8A1C6260B7004DB7B3 /* proj1.png in Resources */,
 				D0D28F8D1C6260B7004DB7B3 /* proj4.png in Resources */,
+				D08E77801C669BA500C095D0 /* blast.mp3 in Resources */,
 				D0D28F7C1C624B39004DB7B3 /* LaunchScreen.storyboard in Resources */,
 				D00B4E281C6271AA00EEDAFC /* GameScene.sks in Resources */,
 				D0D28F791C624B39004DB7B3 /* Assets.xcassets in Resources */,
+				D08E77811C669BA500C095D0 /* music.mp3 in Resources */,
 				D0D28F771C624B39004DB7B3 /* Main.storyboard in Resources */,
 				D07374211C63091300D6CBE0 /* background.jpg in Resources */,
 				D0D28F8B1C6260B7004DB7B3 /* proj2.png in Resources */,
