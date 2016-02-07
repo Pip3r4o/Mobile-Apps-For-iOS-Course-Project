@@ -27,6 +27,11 @@ class Player : SKSpriteNode {
         self.physicsBody?.dynamic = false;
     }
     
+    func move(toX: CGFloat) {
+        let action = SKAction.moveToX(toX, duration: 0.2);
+        self.runAction(action);
+    }
+    
     func pulse() {
         let fadeOut = SKAction.fadeOutWithDuration(0.5);
         let fadeIn = SKAction.fadeInWithDuration(0.5);
