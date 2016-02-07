@@ -13,6 +13,7 @@
 
 SKSpriteNode *background;
 SKLabelNode *title;
+SKLabelNode *score;
 SKLabelNode *instruction;
 SKSpriteNode *ship;
 
@@ -22,6 +23,11 @@ SKSpriteNode *ship;
     background.position = CGPointMake(0.0, 0.0);
     background.zPosition = -100;
     [self addChild:background];
+    
+    score = [SKLabelNode labelNodeWithFontNamed:@"Noteworthy"];
+    score.position = CGPointMake(self.size.width/2, self.size.height/1.25);
+
+    [self addChild:score];
     
     title = [SKLabelNode labelNodeWithFontNamed:@"Noteworthy"];
     title.text = @"Chalkboard Shooter";

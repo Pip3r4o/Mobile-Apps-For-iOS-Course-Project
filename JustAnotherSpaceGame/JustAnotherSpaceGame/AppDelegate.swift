@@ -7,6 +7,10 @@
 //
 
 import UIKit
+import Parse
+import Bolts
+
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         UIApplication.sharedApplication().idleTimerDisabled = true;
+        
+        Parse.setApplicationId("oXLbvSKFI0HQJAT5QCpStZbr0Lx5Upt4j6MJFh92",
+            clientKey: "mTC2XCRXx3xf9aXX7Q35ddWi20pIs4eFH9s9fLfg");
         
         return true;
     }

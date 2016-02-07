@@ -8,6 +8,7 @@
 
 import SpriteKit
 import CoreMotion
+import CoreData
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0;
@@ -24,21 +25,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var enemySpawnTimer : NSTimer? = nil;
     var playerProjectilesTimer : NSTimer? = nil;
     
-    var enemySpawnRate = 1.0;
-    var enemySpawnRateDelta = 0.05;
-    var minEnemyVelocity = 25;
-    var maxEnemyVelocity = 45;
-    var shootingRate = 0.4;
-    var scorePerEnemyKilled = 50;
     var gameDifficulty = 1;
     var remainingLives = INITIAL_LIVES;
-    var playerIsInvincible = false;
+    var enemySpawnRate = INITIAL_ENEMY_SPAWNRATE;
     
     var gamePaused = false;
     
     var hasAccelerometer = true;
     
     var playingSceneXOffset = CGFloat(0);
+    
+    let moc = DataController().managedObjectContext;
     
     func createHUD() {
         let hud = SKSpriteNode(color: UIColor.blackColor(), size: CGSizeMake(self.size.width, self.size.height * 0.05))
@@ -99,9 +96,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self;
         
-        playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(shootingRate), target: self, selector: Selector("shootProjectiles"), userInfo: nil, repeats: true);
+        playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(PLAYER_SHOOTING_RATE), target: self, selector: Selector("shootProjectiles"), userInfo: nil, repeats: true);
         
-        enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(enemySpawnRate), target: self, selector: ("spawnBaddies"), userInfo: nil, repeats: true);
+        enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(self.enemySpawnRate), target: self, selector: ("spawnBaddies"), userInfo: nil, repeats: true);
         
         if (motionManager.accelerometerAvailable == true) {
             motionManager.accelerometerUpdateInterval = 0.1;
@@ -159,13 +156,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if (((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
                 || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy))) {
-                     collisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
+                     try! collisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
             }
             
             if (bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player) {
                 collisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
             } else if (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy) {
-                collisionWithPlayer((bodyB.node as? SKSpriteNode)!, player: (bodyA.node as? SKSpriteNode)!);
+                try! collisionWithPlayer((bodyB.node as? SKSpriteNode)!, player: (bodyA.node as? SKSpriteNode)!);
             }
         }
     }
@@ -196,26 +193,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 
                 if(self.remainingLives <= 0) {
-                    gameOver();
+                    self.gameOver();
                 }
             }
         }
     }
 
-    func resetInvincibleState() {
-        self.player?.toggleInvincibility();
-    }
-    
-    func gameOver() {
-        // navigate to game over screen where score is displayed
-        self.motionManager.stopAccelerometerUpdates();
-        
-        self.paused = true;
-        let transition:SKTransition = SKTransition.revealWithDirection(SKTransitionDirection.Down, duration: 0.2);
-        
-        self.view?.presentScene(GameOverScene(size: CGSize(width: self.size.width, height: self.size.height)), transition: transition);
-    }
-    
     func shootProjectiles(){
         if(!self.gamePaused) {
             let projectile = Projectile(x: self.player!.position.x, y: self.player!.position.y, top: self.size.height);
@@ -236,6 +219,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.addChild(enemy);
         }
     }
+
+    func resetInvincibleState() {
+        self.player?.toggleInvincibility();
+    }
+    
+    func gameOver() {
+        self.saveHighscoreToCD();
+        
+        // navigate to game over screen where score is displayed
+        self.motionManager.stopAccelerometerUpdates();
+        
+        self.paused = true;
+        let transition:SKTransition = SKTransition.revealWithDirection(SKTransitionDirection.Down, duration: 0.2);
+        
+        self.view?.presentScene(GameOverScene(size: CGSize(width: self.size.width, height: self.size.height)), transition: transition);
+    }
     
     func pauseGame() {
         self.gamePaused = true;
@@ -250,6 +249,56 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             });
         
         self.view?.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func saveHighscoreToCD() {
+        let currentMaxScore = getHighscoreFromCD()
+        
+        print("\(currentMaxScore)");
+        print("\(self.score)");
+        
+        if currentMaxScore < self.score {
+            let highscoreFetch = NSFetchRequest(entityName: "Score")
+            
+            do {
+                let fetchedHighscore = try moc.executeFetchRequest(highscoreFetch) as! [Score];
+                if fetchedHighscore.count == 0 {
+                    let entity = NSEntityDescription.insertNewObjectForEntityForName("Score", inManagedObjectContext: moc) as! Score;
+                    entity.setValue(self.score, forKey: "points");
+                    
+                    do {
+                        try moc.save();
+                    } catch {
+                        fatalError("failed to save highscore: \(error)");
+                    }
+                } else {
+                    let managedHighscore = fetchedHighscore[0]
+                    managedHighscore.setValue(self.score, forKey: "points");
+                    do {
+                        try moc.save();
+                    } catch {
+                        fatalError("failed to save highscore: \(error)");
+                    }
+                }
+            } catch {
+                fatalError("\(error)");
+            }
+        }
+    }
+    
+    func getHighscoreFromCD() -> Int {
+        let highscoreFetch = NSFetchRequest(entityName: "Score")
+        
+        do {
+            let fetchedHighscore = try moc.executeFetchRequest(highscoreFetch) as! [Score]
+            if fetchedHighscore.count != 0 {
+                return fetchedHighscore.first!.points!.integerValue
+            }
+        } catch {
+            fatalError("\(error)")
+        }
+        
+        return 0
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

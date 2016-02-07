@@ -22,5 +22,23 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
+        <!--Highscore View Controller-->
+        <scene sceneID="u54-IY-ti9">
+            <objects>
+                <viewController storyboardIdentifier="highscore" id="GLR-km-b1K" customClass="HighscoreViewController" customModule="JustAnotherSpaceGame" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9YN-xh-Pvl"/>
+                        <viewControllerLayoutGuide type="bottom" id="Fwp-qB-rTu"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="D3B-2Z-EsW">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3S7-n6-PsL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="896" y="306"/>
+        </scene>
     </scenes>
 </document>
