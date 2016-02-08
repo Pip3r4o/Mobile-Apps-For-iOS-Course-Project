@@ -9,6 +9,7 @@
 import SpriteKit
 import CoreMotion
 import CoreData
+import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0;
@@ -34,8 +35,78 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hasAccelerometer = true;
     
     var playingSceneXOffset = CGFloat(0);
+
+    var backgroundMusicPlayer = AVAudioPlayer()
     
     let moc = DataController().managedObjectContext;
+    
+    override func didMoveToView(view: SKView) {
+        createBg();
+        createHUD();
+        createSound();
+        createPhysicsWorld();
+        createPlayer();
+        createAccelerometerControl();
+        createObjectSpawners();
+    }
+    
+    func createBg() {
+        background.position = CGPointMake(0, 0);
+        background.zPosition = -100;
+        
+        self.addChild(background);
+    }
+    
+    func createPhysicsWorld() {
+        physicsWorld.contactDelegate = self;
+    }
+    
+    func createPlayer() {
+        player = Player();
+        player!.position = CGPointMake(self.size.width/2, self.size.height/10);
+        self.addChild(player!);
+    }
+    
+    func createSound() {
+        let bgMusicURL = NSBundle.mainBundle().URLForResource("music", withExtension: "mp3")
+        
+        do {
+            try backgroundMusicPlayer = AVAudioPlayer(contentsOfURL: bgMusicURL!, fileTypeHint: nil)
+        } catch {
+            print(error)
+        }
+        
+        backgroundMusicPlayer.play();
+    }
+    
+    func createAccelerometerControl() {
+        if (motionManager.accelerometerAvailable == true) {
+            motionManager.accelerometerUpdateInterval = 0.1;
+            motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler:{
+                data, error in
+                
+                let currentX = self.player!.position.x;
+                
+                self.destX = currentX + CGFloat(data!.acceleration.x * 350);
+                
+                if(self.destX > self.size.width + self.playingSceneXOffset) {
+                    self.destX = self.size.width + self.playingSceneXOffset;
+                }
+                
+                if(self.destX < 0 - self.playingSceneXOffset) {
+                    self.destX = 0 - self.playingSceneXOffset;
+                }
+            });
+        } else {
+            self.hasAccelerometer = false;
+            NSLog("Motion manager not available");
+        }
+    }
+    
+    func createObjectSpawners() {        playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(PLAYER_SHOOTING_RATE), target: self, selector: Selector("shootProjectiles"), userInfo: nil, repeats: true);
+        
+        enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(self.enemySpawnRate), target: self, selector: ("spawnBaddies"), userInfo: nil, repeats: true);
+    }
     
     func createHUD() {
         let hud = SKSpriteNode(color: UIColor.blackColor(), size: CGSizeMake(self.size.width, self.size.height * 0.05))
@@ -82,47 +153,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hud.addChild(self.scoreNode);
     }
     
-    override func didMoveToView(view: SKView) {
-        background.position = CGPointMake(0, 0);
-        background.zPosition = -100;
-        
-        self.addChild(background);
-        
-        createHUD();
-        
-        player = Player();
-        player!.position = CGPointMake(self.size.width/2, self.size.height/10);
-        self.addChild(player!);
-        
-        physicsWorld.contactDelegate = self;
-        
-        playerProjectilesTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(PLAYER_SHOOTING_RATE), target: self, selector: Selector("shootProjectiles"), userInfo: nil, repeats: true);
-        
-        enemySpawnTimer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(self.enemySpawnRate), target: self, selector: ("spawnBaddies"), userInfo: nil, repeats: true);
-        
-        if (motionManager.accelerometerAvailable == true) {
-            motionManager.accelerometerUpdateInterval = 0.1;
-            motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.currentQueue()!, withHandler:{
-                data, error in
-                
-                let currentX = self.player!.position.x;
-                
-                self.destX = currentX + CGFloat(data!.acceleration.x * 350);
-                
-                if(self.destX > self.size.width + self.playingSceneXOffset) {
-                    self.destX = self.size.width + self.playingSceneXOffset;
-                }
-                
-                if(self.destX < 0 - self.playingSceneXOffset) {
-                    self.destX = 0 - self.playingSceneXOffset;
-                }
-            });
-        } else {
-            self.hasAccelerometer = false;
-            NSLog("Motion manager not available");
-        }
-    }
-    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
@@ -156,13 +186,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if (((bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Projectile)
                 || (bodyA.categoryBitMask == Physics.Projectile && bodyB.categoryBitMask == Physics.Enemy))) {
+                    do {
                      try! collisionWithProjectile(bodyA.node as! SKSpriteNode, bullet: bodyB.node as! SKSpriteNode);
+                    } catch {
+                    }
             }
             
             if (bodyA.categoryBitMask == Physics.Enemy && bodyB.categoryBitMask == Physics.Player) {
                 collisionWithPlayer(bodyA.node as! SKSpriteNode, player: bodyB.node as! SKSpriteNode);
             } else if (bodyA.categoryBitMask == Physics.Player && bodyB.categoryBitMask == Physics.Enemy) {
-                try! collisionWithPlayer((bodyB.node as? SKSpriteNode)!, player: (bodyA.node as? SKSpriteNode)!);
+                do {
+                    try! self.collisionWithPlayer((bodyB.node as? SKSpriteNode)!, player: (bodyA.node as? SKSpriteNode)!);
+                } catch {
+                }
             }
         }
     }
