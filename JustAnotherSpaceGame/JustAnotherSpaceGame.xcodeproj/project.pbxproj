@@ -33,6 +33,7 @@
 		D08E777D1C667EE000C095D0 /* Projectile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08E777C1C667EE000C095D0 /* Projectile.swift */; };
 		D08E77801C669BA500C095D0 /* blast.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D08E777E1C669BA500C095D0 /* blast.mp3 */; };
 		D08E77811C669BA500C095D0 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D08E777F1C669BA500C095D0 /* music.mp3 */; };
+		D0AE21541C68437A00F124B2 /* Public.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0AE21531C68437A00F124B2 /* Public.swift */; };
 		D0B2FBCD1C663B31006CC92C /* MainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B2FBCC1C663B31006CC92C /* MainMenu.m */; };
 		D0D28F6E1C624B39004DB7B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F6D1C624B38004DB7B3 /* AppDelegate.swift */; };
 		D0D28F721C624B39004DB7B3 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D28F711C624B39004DB7B3 /* GameScene.swift */; };
@@ -75,6 +76,7 @@
 		D08E777C1C667EE000C095D0 /* Projectile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Projectile.swift; sourceTree = "<group>"; };
 		D08E777E1C669BA500C095D0 /* blast.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blast.mp3; sourceTree = "<group>"; };
 		D08E777F1C669BA500C095D0 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
+		D0AE21531C68437A00F124B2 /* Public.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Public.swift; sourceTree = "<group>"; };
 		D0B2FBCA1C663B30006CC92C /* JustAnotherSpaceGame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JustAnotherSpaceGame-Bridging-Header.h"; sourceTree = "<group>"; };
 		D0B2FBCB1C663B31006CC92C /* MainMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenu.h; sourceTree = "<group>"; };
 		D0B2FBCC1C663B31006CC92C /* MainMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenu.m; sourceTree = "<group>"; };
@@ -183,9 +185,10 @@
 				D0B2FBCB1C663B31006CC92C /* MainMenu.h */,
 				D0B2FBCC1C663B31006CC92C /* MainMenu.m */,
 				D0B2FBCA1C663B30006CC92C /* JustAnotherSpaceGame-Bridging-Header.h */,
-				D05D6E251C6784E20019CC0E /* Constants.swift */,
 				D06E247D1C67E07A00DDE3C1 /* HighscoreViewController.swift */,
 				D06E249B1C67EED700DDE3C1 /* CoreDataModels.xcdatamodeld */,
+				D05D6E251C6784E20019CC0E /* Constants.swift */,
+				D0AE21531C68437A00F124B2 /* Public.swift */,
 			);
 			path = JustAnotherSpaceGame;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 			files = (
 				D08E777B1C667DCF00C095D0 /* Enemy.swift in Sources */,
 				D0B2FBCD1C663B31006CC92C /* MainMenu.m in Sources */,
+				D0AE21541C68437A00F124B2 /* Public.swift in Sources */,
 				D0D28F721C624B39004DB7B3 /* GameScene.swift in Sources */,
 				D0D28F741C624B39004DB7B3 /* GameViewController.swift in Sources */,
 				D06E24A01C67F05B00DDE3C1 /* Score+CoreDataProperties.swift in Sources */,

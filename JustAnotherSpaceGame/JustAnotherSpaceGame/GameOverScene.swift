@@ -11,8 +11,31 @@ import SpriteKit
 
 class GameOverScene : SKScene {
     
+    var background = SKSpriteNode(imageNamed: "background.jpg");
+    
     override func didMoveToView(view: SKView) {
-        self.backgroundColor = SKColor(red: 0.2, green: 1, blue: 0.7, alpha: 1);
+        background.position = CGPointMake(0, 0);
+        background.zPosition = -100;
+        
+        self.addChild(background);
+        
+        let currentScoreLabel = SKLabelNode(fontNamed: "Noteworthy");
+        currentScoreLabel.text = "Your Score: \(PublicScore.currentScore)";
+        currentScoreLabel.position = CGPoint(x: self.size.width / 2, y: self.size.height/1.25);
+        
+        self.addChild(currentScoreLabel);
+        
+        let highScoreLabel = SKLabelNode(fontNamed: "Noteworthy");
+        highScoreLabel.text = "Current Top: \(PublicScore.highScore)";
+        highScoreLabel.position = CGPoint(x: self.size.width / 2, y: self.size.height/1.45);
+        
+        self.addChild(highScoreLabel);
+        
+        let tapToStartLabel = SKLabelNode(fontNamed: "Noteworthy");
+        tapToStartLabel.text = "Tap to start over";
+        tapToStartLabel.position = CGPoint(x: self.size.width/2, y: self.size.height/5);
+        
+        self.addChild(tapToStartLabel);
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

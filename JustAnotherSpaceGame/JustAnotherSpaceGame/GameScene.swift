@@ -308,8 +308,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func saveHighscoreToCD() {
         let currentMaxScore = getHighscoreFromCD()
         
-        print("\(currentMaxScore)");
-        print("\(self.score)");
+        PublicScore.currentScore = self.score;
+        PublicScore.highScore = currentMaxScore;
         
         if currentMaxScore < self.score {
             let highscoreFetch = NSFetchRequest(entityName: "Score")
