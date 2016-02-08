@@ -35,8 +35,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hasAccelerometer = true;
     
     var playingSceneXOffset = CGFloat(0);
-
-    var backgroundMusicPlayer = AVAudioPlayer()
+    
+    var backgroundMusicPlayer: AVAudioPlayer?;
+    var blastMusicPlayer: AVAudioPlayer?;
     
     let moc = DataController().managedObjectContext;
     
@@ -68,15 +69,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createSound() {
-        let bgMusicURL = NSBundle.mainBundle().URLForResource("music", withExtension: "mp3")
+        let backgroundMusicPath = NSBundle.mainBundle().pathForResource("music", ofType: "mp3")
+        let bgMusicURL = NSURL.fileURLWithPath(backgroundMusicPath!)
         
         do {
-            try backgroundMusicPlayer = AVAudioPlayer(contentsOfURL: bgMusicURL!, fileTypeHint: nil)
+            try backgroundMusicPlayer = AVAudioPlayer(contentsOfURL: bgMusicURL)
         } catch {
-            print(error)
+            print("Player not available")
         }
         
-        backgroundMusicPlayer.play();
+        let bumpSoundPath = NSBundle.mainBundle().pathForResource("blast", ofType: "mp3")
+        let bumpSoundUrl = NSURL.fileURLWithPath(bumpSoundPath!)
+        
+        do {
+            try blastMusicPlayer = AVAudioPlayer(contentsOfURL: bumpSoundUrl)
+        } catch {
+            print("Player not available")
+        }
+        
+        backgroundMusicPlayer?.volume = 0.7
+        backgroundMusicPlayer?.play()
     }
     
     func createAccelerometerControl() {
@@ -209,7 +221,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bullet.removeFromParent();
         self.score += SCORE_ENEMY;
         
+        self.blastMusicPlayer!.play();
+        
         self.scoreNode.text = "\(score)";
+        
+        self.blastMusicPlayer!.stop();
     }
     
     func collisionWithPlayer(enemy: SKSpriteNode, player: SKSpriteNode) {
@@ -262,6 +278,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func gameOver() {
         self.saveHighscoreToCD();
+        
+        self.backgroundMusicPlayer!.stop();
         
         // navigate to game over screen where score is displayed
         self.motionManager.stopAccelerometerUpdates();
