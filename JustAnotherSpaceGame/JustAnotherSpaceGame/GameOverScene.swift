@@ -8,12 +8,18 @@
 
 import Foundation
 import SpriteKit
+import Parse
+import Bolts
 
 class GameOverScene : SKScene {
     
+    var viewController: GameViewController!
     var background = SKSpriteNode(imageNamed: "background.jpg");
     
     override func didMoveToView(view: SKView) {
+        viewController = self.view!.window!.rootViewController as! GameViewController;
+        NSLog("\(viewController)");
+        
         background.position = CGPointMake(0, 0);
         background.zPosition = -100;
         
@@ -46,8 +52,11 @@ class GameOverScene : SKScene {
             
             let transition:SKTransition = SKTransition.revealWithDirection(SKTransitionDirection.Down, duration: 0.2);
             
+            //self.viewController.performSegueWithIdentifier("segueToHS", sender: nil);
+            
+            //self.viewController.pushScores("\(PublicScore.highScore)");
+            
             self.view?.presentScene(MainMenu(size: CGSize(width: self.size.width, height: self.size.height)), transition: transition);
-            break;
         }
     }
 }

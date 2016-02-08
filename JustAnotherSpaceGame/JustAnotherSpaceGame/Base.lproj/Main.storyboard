@@ -18,14 +18,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <segue destination="GLR-km-b1K" kind="modal" identifier="segueToHS" id="WOu-ID-CG6"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="160" y="536"/>
         </scene>
-        <!--Highscore View Controller-->
+        <!--HighscoreViewController-->
         <scene sceneID="u54-IY-ti9">
             <objects>
-                <viewController storyboardIdentifier="highscore" id="GLR-km-b1K" customClass="HighscoreViewController" customModule="JustAnotherSpaceGame" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="highscore" title="HighscoreViewController" id="GLR-km-b1K" customClass="HighscoreViewController" customModule="JustAnotherSpaceGame" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9YN-xh-Pvl"/>
                         <viewControllerLayoutGuide type="bottom" id="Fwp-qB-rTu"/>
@@ -33,12 +37,55 @@
                     <view key="view" contentMode="scaleToFill" id="D3B-2Z-EsW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Your score: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t8T-hv-LLP">
+                                <rect key="frame" x="0.0" y="82" width="207" height="73"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qsf-Y9-TQE">
+                                <rect key="frame" x="223" y="98" width="115" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XuX-CW-dPs">
+                                <rect key="frame" x="218" y="304" width="125" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="29"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" keyboardAppearance="light" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yuW-t5-qwd">
+                                <rect key="frame" x="276" y="288" width="220" height="61"/>
+                                <state key="normal" title="Submit">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="saveHighscore:" destination="GLR-km-b1K" eventType="touchUpInside" id="baV-0a-cas"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.25098040700000002" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="yuW-t5-qwd" firstAttribute="centerY" secondItem="D3B-2Z-EsW" secondAttribute="centerY" id="6FW-em-okV"/>
+                            <constraint firstItem="XuX-CW-dPs" firstAttribute="centerX" secondItem="D3B-2Z-EsW" secondAttribute="centerX" id="8mu-t9-7HU"/>
+                            <constraint firstItem="XuX-CW-dPs" firstAttribute="centerY" secondItem="qsf-Y9-TQE" secondAttribute="centerY" id="Bas-gw-i5D"/>
+                            <constraint firstItem="XuX-CW-dPs" firstAttribute="centerY" secondItem="D3B-2Z-EsW" secondAttribute="centerY" id="IO5-lj-IhJ"/>
+                            <constraint firstItem="qsf-Y9-TQE" firstAttribute="centerY" secondItem="D3B-2Z-EsW" secondAttribute="centerY" id="LTw-YW-ubS"/>
+                            <constraint firstItem="qsf-Y9-TQE" firstAttribute="centerX" secondItem="D3B-2Z-EsW" secondAttribute="centerX" id="TUm-VP-SVs"/>
+                            <constraint firstItem="yuW-t5-qwd" firstAttribute="centerX" secondItem="D3B-2Z-EsW" secondAttribute="centerX" id="q88-vB-PwF"/>
+                            <constraint firstItem="yuW-t5-qwd" firstAttribute="centerY" secondItem="qsf-Y9-TQE" secondAttribute="centerY" id="x2q-AC-F19"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="scoreLabel" destination="qsf-Y9-TQE" id="KVP-R3-Th8"/>
+                        <outlet property="usernameTextField" destination="XuX-CW-dPs" id="E76-sl-jHd"/>
+                        <segue destination="BV1-FR-VrT" kind="show" identifier="segueToMain" id="4zx-VL-7Hh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3S7-n6-PsL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="896" y="306"/>
+            <point key="canvasLocation" x="848" y="536"/>
         </scene>
     </scenes>
 </document>

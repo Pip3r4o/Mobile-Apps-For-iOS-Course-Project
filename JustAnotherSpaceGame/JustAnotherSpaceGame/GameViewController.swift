@@ -54,4 +54,12 @@ class GameViewController: UIViewController {
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
+    
+    func pushScores(score: String!) {
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil);
+        
+        let highscoreController = HighscoreViewController();
+        
+        self.presentViewController(highscoreController, animated:true, completion:nil);
+    }
 }
