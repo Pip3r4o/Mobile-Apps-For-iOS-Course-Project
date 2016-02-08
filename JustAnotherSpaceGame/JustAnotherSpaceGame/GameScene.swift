@@ -42,6 +42,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let moc = DataController().managedObjectContext;
     
     override func didMoveToView(view: SKView) {
+        self.paused = false;
+        self.gamePaused = false;
+        
         createBg();
         createHUD();
         createSound();
