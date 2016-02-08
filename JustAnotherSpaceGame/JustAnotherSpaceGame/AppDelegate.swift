@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         UIApplication.sharedApplication().idleTimerDisabled = true;
         
-        Parse.setApplicationId("oXLbvSKFI0HQJAT5QCpStZbr0Lx5Upt4j6MJFh92",
-            clientKey: "mTC2XCRXx3xf9aXX7Q35ddWi20pIs4eFH9s9fLfg");
+        Parse.setApplicationId("lAupFS3j0iEy0rPtMYadWrnf05R1Cyc3uNII2Yg9",
+            clientKey: "uIKSJZie2a60aeAlP5C30aORKrVxk6Dkm2doDJwm");
         
         return true;
     }

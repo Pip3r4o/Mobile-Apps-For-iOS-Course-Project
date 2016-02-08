@@ -69,10 +69,10 @@ class HighscoreViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func saveHighscore(sender: AnyObject) {
-        let highscore = PFObject(className:"Score");
+        let highscore = PFObject(className:"Highscore");
         let scoreAsNumber = PublicScore.currentScore;
-        highscore["Points"] = 12;
-        highscore["Name"] = "Unknown";
+        highscore["Points"] = scoreAsNumber;
+        highscore["Name"] = usernameTextField.text;
         
         if country != nil {
             highscore["Country"] = country;
@@ -80,20 +80,15 @@ class HighscoreViewController: UIViewController, CLLocationManagerDelegate {
             highscore["Country"] = "Unknown";
         }
         
-        NSLog("\(highscore["Country"])");
-        NSLog("\(usernameTextField.text)");
-        
-        //highscore.saveInBackground();
-        //highscore.saveInBackgroundWithBlock({
-        //    NSLog("Saved");
-        //});
-        
-        do {
-            try highscore.save();
-        } catch let error as NSError {
-            NSLog("Didnt Save");
-            NSLog("\(error)");
+        highscore.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError?) -> Void in
+        // Handle success or failure here ...
+        if succeeded {
+        print("Save successful")
+        } else {
+        print("Save unsuccessful: \(error?.userInfo)")
         }
+        
+        });
 
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil);
         
