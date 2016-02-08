@@ -54,9 +54,9 @@ class GameOverScene : SKScene {
             
             //self.viewController.performSegueWithIdentifier("segueToHS", sender: nil);
             
-            //self.viewController.pushScores("\(PublicScore.highScore)");
+            self.viewController.pushScores("\(PublicScore.highScore)");
             
-            self.view?.presentScene(MainMenu(size: CGSize(width: self.size.width, height: self.size.height)), transition: transition);
+            //self.view?.presentScene(MainMenu(size: CGSize(width: self.size.width, height: self.size.height)), transition: transition);
         }
     }
 }

@@ -20,7 +20,7 @@ class HighscoreViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        scoreLabel.text = score;
+        scoreLabel.text = "\(PublicScore.currentScore)";
         usernameTextField.becomeFirstResponder();
         
         self.locationManager.requestAlwaysAuthorization();
@@ -69,16 +69,36 @@ class HighscoreViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func saveHighscore(sender: AnyObject) {
-        let highscore = PFObject(className:"Score")
+        let highscore = PFObject(className:"Score");
         let scoreAsNumber = PublicScore.currentScore;
-        highscore["score"] = NSNumber(integer: scoreAsNumber);
-        highscore["name"] = usernameTextField.text;
+        highscore["Points"] = 12;
+        highscore["Name"] = "Unknown";
         
         if country != nil {
-            highscore["country"] = country;
+            highscore["Country"] = country;
+        } else {
+            highscore["Country"] = "Unknown";
         }
         
-        highscore.saveInBackground();
-        performSegueWithIdentifier("segueToMain", sender: nil);
+        NSLog("\(highscore["Country"])");
+        NSLog("\(usernameTextField.text)");
+        
+        //highscore.saveInBackground();
+        //highscore.saveInBackgroundWithBlock({
+        //    NSLog("Saved");
+        //});
+        
+        do {
+            try highscore.save();
+        } catch let error as NSError {
+            NSLog("Didnt Save");
+            NSLog("\(error)");
+        }
+
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil);
+        
+        let gameViewController = storyBoard.instantiateViewControllerWithIdentifier("Main");
+        
+        self.presentViewController(gameViewController, animated:true, completion:nil);
     }
 }

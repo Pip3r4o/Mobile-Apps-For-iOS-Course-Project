@@ -58,7 +58,7 @@ class GameViewController: UIViewController {
     func pushScores(score: String!) {
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil);
         
-        let highscoreController = HighscoreViewController();
+        let highscoreController = storyBoard.instantiateViewControllerWithIdentifier("highscore");
         
         self.presentViewController(highscoreController, animated:true, completion:nil);
     }

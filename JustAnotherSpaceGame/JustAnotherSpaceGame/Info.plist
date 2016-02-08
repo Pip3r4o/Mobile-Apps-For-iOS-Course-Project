@@ -32,6 +32,8 @@
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Required LS</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -17,7 +17,7 @@ struct Physics {
     static let GameSceneBoundaries : UInt32 = 5;
 }
 
-let INITIAL_LIVES = 3;
+let INITIAL_LIVES = 4;
 let INITIAL_ENEMY_SPAWNRATE = 1.0;
 
 let ENEMY_SPAWNRATE_DELTA = 0.05;
